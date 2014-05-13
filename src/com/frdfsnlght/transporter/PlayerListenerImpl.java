@@ -38,6 +38,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Vehicle;
 
 /**
  *
@@ -248,8 +251,18 @@ public final class PlayerListenerImpl implements Listener {
         }
 
         Context ctx = new Context(player);
-        try {
-            ReservationImpl r = new ReservationImpl(player, fromGate);
+        try { //here
+			ReservationImpl r;
+			Entity vech = player.getVehicle();
+			Vehicle vec = (Vehicle)vech;
+			if ( vec instanceof Horse )
+			{
+				r = new ReservationImpl(vec, fromGate);
+			}
+			else 
+			{
+				r = new ReservationImpl(player, fromGate);
+			}
             r.depart();
             Location newLoc = r.getToLocation();
             if (newLoc != null) {

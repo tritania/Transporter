@@ -32,6 +32,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Boat;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
@@ -45,6 +46,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import static org.bukkit.entity.Horse.*;
 /**
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>
@@ -387,7 +389,7 @@ public final class ReservationImpl implements Reservation {
         if (vehicle.getPassenger() instanceof Player)
             extractPlayer((Player)vehicle.getPassenger());
 
-        if ((vehicle instanceof Minecart) || (vehicle instanceof Boat))
+        if ((vehicle instanceof Minecart) || (vehicle instanceof Boat) || (vehicle instanceof Horse))
             entityType = vehicle.getType();
         else
             throw new IllegalArgumentException("can't create state for " + vehicle.getClass().getName());
@@ -1047,6 +1049,33 @@ public final class ReservationImpl implements Reservation {
                     entity.remove();
                     entity = theWorld.spawn(theLocation, Boat.class);
                     ((Boat)entity).setPassenger(player);
+                    break;
+                case HORSE:
+					Horse en = (Horse)entity;
+					Variant vart = en.getVariant();
+					Color col = en.getColor();
+					Style sty = en.getStyle();
+					int dom = en.getDomestication();
+					int life = en.getTicksLived();
+					ItemStack arm = en.getInventory().getArmor();
+					double ju = en.getJumpStrength();
+					double health = en.getMaxHealth();
+					
+					en.remove();
+					
+                    en = theWorld.spawn(theLocation, Horse.class);
+                    en.setColor(col);
+                    en.setDomestication(dom);
+                    en.setVariant(vart);
+                    en.setStyle(sty);
+                    en.setTicksLived(life);
+                    en.setTamed(true);
+					en.getInventory().setSaddle(new ItemStack(Material.SADDLE, 1));
+					en.getInventory().setArmor(arm);
+					en.setJumpStrength(ju);
+					en.setMaxHealth(health);
+                    
+                    ((Horse)entity).setPassenger(player);
                     break;
             }
         }
